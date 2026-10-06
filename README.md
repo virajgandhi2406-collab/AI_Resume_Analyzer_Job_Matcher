@@ -1,9 +1,12 @@
 # ⚡ ResumePulse AI: Intelligent ATS Resume Analyzer & Job Matcher Platform
 
+[![Live Demo](https://img.shields.io/badge/Live_Demo-GitHub_Pages-22c55e.svg?style=for-the-badge&logo=github)](https://virajgandhi2406-collab.github.io/AI_Resume_Analyzer_Job_Matcher/)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688.svg?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=flat&logo=python)](https://www.python.org)
 [![SQLAlchemy](https://img.shields.io/badge/ORM-SQLAlchemy%202.0-D71F00.svg?style=flat)](https://www.sqlalchemy.org)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+> 🌐 **Live Web App:** [https://virajgandhi2406-collab.github.io/AI_Resume_Analyzer_Job_Matcher/](https://virajgandhi2406-collab.github.io/AI_Resume_Analyzer_Job_Matcher/)
 
 An enterprise-grade, full-stack AI career platform that empowers job seekers to optimize resumes for Applicant Tracking Systems (ATS), match profiles against real-time job openings using Cosine & Semantic Similarity, and generate customized career assets (Cover Letters, Bullet Optimizations, Interview Prep, Upskilling Roadmaps) with state-of-the-art Multi-Provider AI.
 
