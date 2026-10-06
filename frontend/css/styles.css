@@ -1,9 +1,10 @@
 /* ==========================================================================
-   ResumePulse - Professional, Trust-First Career & ATS Platform Stylesheet
+   ResumePulse - Universal Career & ATS Resume Optimization Stylesheet
+   Designed for Every Job Seeker across All Industries & Career Levels
    ========================================================================== */
 
 :root {
-  /* Professional Executive Palette */
+  /* Executive Professional Palette */
   --bg-body: #0b0f19;
   --bg-surface: #111827;
   --bg-surface-elevated: #1e293b;
@@ -20,7 +21,7 @@
   --text-muted: #64748b;
   --text-inverse: #0f172a;
 
-  /* Executive Accent Tones */
+  /* Universal Accent Colors */
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
   --primary-subtle: rgba(37, 99, 235, 0.12);
@@ -202,10 +203,6 @@ a:hover {
   margin-left: 10px;
 }
 
-.trust-pill i {
-  color: #60a5fa;
-}
-
 /* Nav Links */
 .nav-links {
   display: flex;
@@ -255,7 +252,7 @@ a:hover {
   gap: 12px;
 }
 
-.ai-provider-select {
+.industry-selector-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -267,7 +264,7 @@ a:hover {
   font-size: 0.85rem;
 }
 
-.ai-provider-select select {
+.industry-selector-wrap select {
   background: transparent;
   border: none;
   color: var(--text-primary);
@@ -364,6 +361,7 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 /* Main Layout */
@@ -405,6 +403,8 @@ a:hover {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .card-header h3, .card-header h4 {
@@ -413,6 +413,49 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* Industry Segment Header Bar */
+.industry-nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.industry-nav-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.industry-tab-btn {
+  padding: 5px 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+}
+.industry-tab-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-focus);
+}
+.industry-tab-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  font-weight: 600;
 }
 
 /* Trust Banner / Hero */
@@ -682,6 +725,8 @@ a:hover {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .section-desc {
@@ -707,6 +752,7 @@ a:hover {
 .form-row {
   display: flex;
   gap: 14px;
+  flex-wrap: wrap;
 }
 
 .input-text, .input-select, .input-textarea {
@@ -1386,6 +1432,7 @@ a:hover {
   display: flex;
   gap: 10px;
   margin-top: 16px;
+  flex-wrap: wrap;
 }
 
 /* AI Copilot Suite */
@@ -1397,6 +1444,7 @@ a:hover {
   border-radius: var(--radius-md);
   border: 1px solid var(--border-default);
   margin-bottom: 20px;
+  overflow-x: auto;
 }
 
 .copilot-tab {
@@ -1414,6 +1462,7 @@ a:hover {
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition);
+  white-space: nowrap;
 }
 
 .copilot-tab.active {
@@ -1508,11 +1557,14 @@ a:hover {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .roadmap-inputs {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .roadmap-timeline {
