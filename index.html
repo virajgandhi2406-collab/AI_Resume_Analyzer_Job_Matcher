@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ResumePulse | Professional ATS Resume Review & Job Matcher</title>
-  <meta name="description" content="Private, recruiter-approved ATS resume feedback, keyword optimization, and targeted job matching." />
+  <title>ResumePulse | Free ATS Resume Reviewer & Job Matcher for Every Career</title>
+  <meta name="description" content="Private, recruiter-approved ATS resume feedback, keyword optimization, and targeted job matching for all professions and experience levels." />
   
   <!-- Modern Clean Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +13,14 @@
   
   <!-- FontAwesome Icons for clean UI -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Client-side PDF Parser (PDF.js) for instant browser-based file review -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
 
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="css/styles.css" />
@@ -29,10 +37,10 @@
       </div>
       <div class="brand-text">
         <span class="brand-title">ResumePulse</span>
-        <span class="brand-subtitle">Career Intelligence & ATS Optimizer</span>
+        <span class="brand-subtitle">ATS Resume Reviewer & Career Toolkit</span>
       </div>
-      <span class="trust-pill" title="Private and secure memory processing">
-        <i class="fa-solid fa-shield-halved"></i> 100% Private & Secure
+      <span class="trust-pill" title="Private and secure in-browser memory processing">
+        <i class="fa-solid fa-shield-halved"></i> 100% Free & Private
       </span>
     </div>
 
@@ -47,7 +55,7 @@
       </button>
       <button class="nav-item" data-tab="matcher">
         <i class="fa-solid fa-briefcase"></i>
-        <span>Job Matcher</span>
+        <span>Job Matcher & Tailor</span>
       </button>
       <button class="nav-item" data-tab="copilot">
         <i class="fa-solid fa-compass-drafting"></i>
@@ -60,18 +68,20 @@
     </nav>
 
     <div class="nav-actions">
-      <div class="ai-provider-select">
-        <label for="providerSelector"><i class="fa-solid fa-sliders"></i></label>
-        <select id="providerSelector" title="Select AI Engine Provider">
-          <option value="auto">Auto Selection (Recommended)</option>
-          <option value="gemini">Google Gemini 1.5</option>
-          <option value="openai">OpenAI GPT-4o</option>
-          <option value="groq">Groq LLaMA 3.1</option>
-          <option value="local_nlp">Local NLP Heuristic (Offline)</option>
+      <div class="industry-selector-wrap">
+        <label for="industrySelector"><i class="fa-solid fa-user-gear"></i></label>
+        <select id="industrySelector" onchange="app.switchIndustry(this.value)" title="Choose your industry">
+          <option value="tech">💻 Software & IT</option>
+          <option value="product">📈 Product & Project Mgmt</option>
+          <option value="marketing">🎯 Marketing & Growth</option>
+          <option value="sales">💼 Sales & Business Dev</option>
+          <option value="healthcare">🏥 Healthcare & Nursing</option>
+          <option value="finance">📊 Finance & Accounting</option>
+          <option value="junior">🎓 Entry-Level / Career Switcher</option>
         </select>
       </div>
 
-      <button id="btnQuickDemo" class="btn btn-secondary btn-sm" title="Preload sample candidate resume">
+      <button id="btnQuickDemo" class="btn btn-secondary btn-sm" title="Load sample profile for current field">
         <i class="fa-solid fa-user-check"></i> <span>Sample Profile</span>
       </button>
 
@@ -84,28 +94,40 @@
   <!-- Main Viewports -->
   <main class="main-content">
     
+    <!-- Industry Fast Switcher Bar -->
+    <div class="industry-nav-bar">
+      <span class="industry-nav-label"><i class="fa-solid fa-layer-group"></i> Choose Career Field:</span>
+      <button class="industry-tab-btn active" data-industry="tech" onclick="app.switchIndustry('tech')">💻 Software & IT</button>
+      <button class="industry-tab-btn" data-industry="product" onclick="app.switchIndustry('product')">📈 Product & Operations</button>
+      <button class="industry-tab-btn" data-industry="marketing" onclick="app.switchIndustry('marketing')">🎯 Marketing & Growth</button>
+      <button class="industry-tab-btn" data-industry="sales" onclick="app.switchIndustry('sales')">💼 Sales & BD</button>
+      <button class="industry-tab-btn" data-industry="healthcare" onclick="app.switchIndustry('healthcare')">🏥 Healthcare & Nursing</button>
+      <button class="industry-tab-btn" data-industry="finance" onclick="app.switchIndustry('finance')">📊 Finance & Accounting</button>
+      <button class="industry-tab-btn" data-industry="junior" onclick="app.switchIndustry('junior')">🎓 Students & Entry-Level</button>
+    </div>
+
     <!-- ==================== TAB 1: OVERVIEW DASHBOARD ==================== -->
     <section id="tab-dashboard" class="tab-pane active">
       <!-- Trust Hero Banner -->
       <div class="trust-hero-banner">
         <div class="hero-content">
-          <div class="hero-tag"><i class="fa-solid fa-check-circle"></i> Recruiter-Verified ATS Standards</div>
-          <h1 class="hero-title">Actionable feedback to help you pass the ATS and land interviews</h1>
-          <p class="hero-desc">
-            Evaluate your resume against real applicant tracking systems (Workday, Greenhouse, Lever, Taleo), identify keyword gaps, match against open positions, and draft tailored career materials.
+          <div class="hero-tag"><i class="fa-solid fa-check-circle"></i> Built for Every Career & Industry</div>
+          <h1 class="hero-title" id="heroTitleDynamic">Clear, honest resume feedback to help you land more interviews</h1>
+          <p class="hero-desc" id="heroDescDynamic">
+            Whether you are in technology, sales, marketing, healthcare, finance, or taking your first career steps — get instant feedback on ATS readability, missing keywords, and recruiter-approved bullet enhancements.
           </p>
           <div class="btn-group">
             <button class="btn btn-primary" onclick="app.switchTab('analyzer')">
-              <i class="fa-solid fa-upload"></i> Review Your Resume
+              <i class="fa-solid fa-upload"></i> Check My Resume (Free)
             </button>
             <button class="btn btn-outline" onclick="app.switchTab('matcher')">
-              <i class="fa-solid fa-magnifying-glass"></i> Explore Job Matches
+              <i class="fa-solid fa-magnifying-glass"></i> Match Against Job Postings
             </button>
           </div>
           <div class="hero-trust-badges">
-            <div class="trust-badge-item"><i class="fa-solid fa-lock"></i> Zero Data Sharing</div>
-            <div class="trust-badge-item"><i class="fa-solid fa-file-circle-check"></i> 4D Scoring Matrix</div>
-            <div class="trust-badge-item"><i class="fa-solid fa-bullseye"></i> Recruiter Heuristics</div>
+            <div class="trust-badge-item"><i class="fa-solid fa-lock"></i> 100% Private (No Account Needed)</div>
+            <div class="trust-badge-item"><i class="fa-solid fa-file-circle-check"></i> Workday / Greenhouse / Lever Compatible</div>
+            <div class="trust-badge-item"><i class="fa-solid fa-bullseye"></i> Real Hiring Manager Rules</div>
           </div>
         </div>
         
@@ -113,29 +135,29 @@
           <div class="stat-box">
             <div class="stat-box-icon blue"><i class="fa-solid fa-file-lines"></i></div>
             <div>
-              <h3 id="statTotalResumes">0</h3>
+              <h3 id="statTotalResumes">3</h3>
               <p>Resumes Analyzed</p>
             </div>
           </div>
           <div class="stat-box">
             <div class="stat-box-icon green"><i class="fa-solid fa-circle-check"></i></div>
             <div>
-              <h3 id="statAvgAts">0%</h3>
-              <p>Avg ATS Compatibility</p>
+              <h3 id="statAvgAts">88%</h3>
+              <p>Average Score</p>
             </div>
           </div>
           <div class="stat-box">
             <div class="stat-box-icon amber"><i class="fa-solid fa-briefcase"></i></div>
             <div>
-              <h3 id="statTotalJobs">0</h3>
-              <p>Target Roles Available</p>
+              <h3 id="statTotalJobs">7</h3>
+              <p>Industry Openings</p>
             </div>
           </div>
           <div class="stat-box">
             <div class="stat-box-icon purple"><i class="fa-solid fa-diagram-project"></i></div>
             <div>
-              <h3 id="statTotalMatches">0</h3>
-              <p>Match Evaluations</p>
+              <h3 id="statTotalMatches">14</h3>
+              <p>Tailored Evaluations</p>
             </div>
           </div>
         </div>
@@ -144,8 +166,8 @@
       <!-- Recruiter Insight Tip -->
       <div class="recruiter-insight-bar">
         <i class="fa-solid fa-lightbulb text-amber" style="font-size: 18px;"></i>
-        <div>
-          <strong>Recruiter Insight:</strong> Resumes with quantifiable business metrics (e.g. <em>"reduced latency by 45%", "managed $2.5M pipeline"</em>) receive up to <strong>40% more interview callbacks</strong> than duty-focused descriptions.
+        <div id="recruiterTipDynamic">
+          <strong>Recruiter Tip:</strong> Resumes with quantifiable outcomes (e.g. <em>"increased revenue by 24%", "reduced triage wait time by 30 minutes", "delivered $1.2M project on time"</em>) receive up to <strong>40% more interview callbacks</strong> than passive duty lists.
         </div>
       </div>
 
@@ -155,28 +177,28 @@
         <div class="pro-card">
           <div class="card-header">
             <h3><i class="fa-solid fa-filter text-primary"></i> Application Pipeline</h3>
-            <span class="pill">Active</span>
+            <span class="pill">Active Search</span>
           </div>
           <div class="pipeline-funnel" id="dashboardPipelineFunnel">
             <div class="funnel-row">
               <span class="funnel-label"><i class="fa-solid fa-bookmark text-muted"></i> Saved</span>
               <div class="funnel-bar-bg"><div class="funnel-bar-fill fill-wishlist" id="barWishlist" style="width: 20%"></div></div>
-              <span class="funnel-count" id="countWishlist">0</span>
+              <span class="funnel-count" id="countWishlist">1</span>
             </div>
             <div class="funnel-row">
               <span class="funnel-label"><i class="fa-solid fa-paper-plane text-primary"></i> Applied</span>
               <div class="funnel-bar-bg"><div class="funnel-bar-fill fill-applied" id="barApplied" style="width: 40%"></div></div>
-              <span class="funnel-count" id="countApplied">0</span>
+              <span class="funnel-count" id="countApplied">2</span>
             </div>
             <div class="funnel-row">
               <span class="funnel-label"><i class="fa-solid fa-comments text-amber"></i> Interviews</span>
               <div class="funnel-bar-bg"><div class="funnel-bar-fill fill-interview" id="barInterview" style="width: 30%"></div></div>
-              <span class="funnel-count" id="countInterview">0</span>
+              <span class="funnel-count" id="countInterview">1</span>
             </div>
             <div class="funnel-row">
               <span class="funnel-label"><i class="fa-solid fa-trophy text-green"></i> Offers</span>
               <div class="funnel-bar-bg"><div class="funnel-bar-fill fill-offer" id="barOffer" style="width: 15%"></div></div>
-              <span class="funnel-count" id="countOffer">0</span>
+              <span class="funnel-count" id="countOffer">1</span>
             </div>
           </div>
         </div>
@@ -184,8 +206,8 @@
         <!-- In-Demand Skills -->
         <div class="pro-card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-arrow-trend-up text-green"></i> In-Demand Skills in Market</h3>
-            <span class="pill">Current Openings</span>
+            <h3><i class="fa-solid fa-arrow-trend-up text-green"></i> In-Demand Skills (<span id="inDemandFieldLabel">Software</span>)</h3>
+            <span class="pill">Hiring Trends</span>
           </div>
           <div class="top-skills-cloud" id="dashboardSkillsCloud">
             <div class="loading-state"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading market data...</div>
@@ -195,23 +217,23 @@
         <!-- Quick Launch Actions -->
         <div class="pro-card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-bolt text-primary"></i> Recommended Next Steps</h3>
+            <h3><i class="fa-solid fa-bolt text-primary"></i> Universal Career Tools</h3>
           </div>
           <div class="quick-action-list">
             <button class="action-item" onclick="app.switchTab('analyzer')">
               <div class="action-icon blue"><i class="fa-solid fa-file-arrow-up"></i></div>
               <div class="action-meta">
-                <strong>Upload Resume</strong>
-                <span>Get a detailed 4-dimensional ATS score report</span>
+                <strong>Upload Resume File</strong>
+                <span>Instant 4-dimensional ATS score report</span>
               </div>
               <i class="fa-solid fa-chevron-right action-arrow"></i>
             </button>
 
-            <button class="action-item" onclick="app.switchTab('copilot', 'cover_letter')">
-              <div class="action-icon green"><i class="fa-solid fa-envelope-open-text"></i></div>
+            <button class="action-item" onclick="app.switchTab('matcher')">
+              <div class="action-icon green"><i class="fa-solid fa-bullseye"></i></div>
               <div class="action-meta">
-                <strong>Draft Tailored Cover Letter</strong>
-                <span>Personalized directly to role requirements</span>
+                <strong>Paste & Match Any Job</strong>
+                <span>Identify exact missing keywords from any posting</span>
               </div>
               <i class="fa-solid fa-chevron-right action-arrow"></i>
             </button>
@@ -219,8 +241,8 @@
             <button class="action-item" onclick="app.switchTab('copilot', 'bullet_optimizer')">
               <div class="action-icon amber"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
               <div class="action-meta">
-                <strong>Upgrade Resume Bullets</strong>
-                <span>Convert duties to proven Google XYZ formula</span>
+                <strong>Bullet Point Rewriter</strong>
+                <span>Convert weak duties into quantifiable accomplishments</span>
               </div>
               <i class="fa-solid fa-chevron-right action-arrow"></i>
             </button>
@@ -233,12 +255,12 @@
     <section id="tab-analyzer" class="tab-pane">
       <div class="section-title-row">
         <div>
-          <h2><i class="fa-solid fa-file-circle-check text-primary"></i> Resume Review & ATS Compatibility Audit</h2>
-          <p class="section-desc">Test your resume against applicant tracking systems to ensure parsing accuracy and keyword coverage.</p>
+          <h2><i class="fa-solid fa-file-circle-check text-primary"></i> Resume Review & ATS Compatibility Check</h2>
+          <p class="section-desc">Inspect your resume the same way corporate ATS scanners (Workday, Greenhouse, Taleo) and human recruiters do.</p>
         </div>
         <div class="btn-group">
-          <select id="savedResumesSelect" class="input-select" style="min-width: 220px;" onchange="app.handleSavedResumeSelect(this.value)">
-            <option value="">-- Load Analyzed Resume --</option>
+          <select id="savedResumesSelect" class="input-select" style="min-width: 240px;" onchange="app.handleSavedResumeSelect(this.value)">
+            <option value="">-- Load Sample Candidate Profile --</option>
           </select>
           <button id="btnExportPdf" class="btn btn-secondary btn-sm" disabled onclick="app.exportCurrentResumePdf()">
             <i class="fa-solid fa-file-pdf"></i> Download PDF Report
@@ -252,7 +274,7 @@
           <div class="pro-card">
             <div class="tabs-subnav">
               <button class="subtab-btn active" data-subtab="file-upload">
-                <i class="fa-solid fa-file-arrow-up"></i> Upload Document
+                <i class="fa-solid fa-file-arrow-up"></i> Upload Resume File
               </button>
               <button class="subtab-btn" data-subtab="raw-text">
                 <i class="fa-solid fa-align-left"></i> Paste Resume Text
@@ -266,7 +288,7 @@
                 <div class="drop-zone-content">
                   <div class="drop-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
                   <h4>Drag & Drop your resume file here</h4>
-                  <p>Accepts <strong>PDF, DOCX, or TXT</strong> (Max 15MB)</p>
+                  <p>Accepts <strong>PDF, DOCX, or TXT</strong> (Processed locally & privately)</p>
                   <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('resumeFileInput').click()">
                     <i class="fa-solid fa-folder-open"></i> Select File from Computer
                   </button>
@@ -278,12 +300,12 @@
             <div id="subtab-raw-text" class="subtab-pane">
               <div class="form-group">
                 <label for="rawResumeText">Resume Text Content:</label>
-                <textarea id="rawResumeText" class="input-textarea" rows="8" placeholder="Paste your complete resume text here..."></textarea>
+                <textarea id="rawResumeText" class="input-textarea" rows="8" placeholder="Paste your resume text here (Summary, Experience, Skills, Education)..."></textarea>
               </div>
               <div class="form-row">
                 <div class="form-group" style="flex: 1;">
-                  <label for="rawTargetTitle">Target Job Role (Optional):</label>
-                  <input type="text" id="rawTargetTitle" class="input-text" placeholder="e.g. Senior Software Engineer" />
+                  <label for="rawTargetTitle">Target Job Role:</label>
+                  <input type="text" id="rawTargetTitle" class="input-text" placeholder="e.g. Marketing Manager, Financial Analyst, Nurse, Software Engineer" />
                 </div>
                 <button type="button" class="btn btn-primary" id="btnAnalyzeRawText" onclick="app.analyzeRawResumeText()" style="align-self: flex-end; margin-bottom: 2px;">
                   <i class="fa-solid fa-check"></i> Analyze Resume
@@ -291,12 +313,16 @@
               </div>
             </div>
 
-            <!-- Quick Sample Profiles -->
+            <!-- Pre-made Industry Samples for Instant Testing -->
             <div class="demo-samples-row">
-              <span class="text-muted"><i class="fa-solid fa-user-tag"></i> Try Sample Profiles:</span>
-              <button class="badge-chip" onclick="app.loadSampleResume('fullstack')">Alex — Senior Full Stack</button>
-              <button class="badge-chip" onclick="app.loadSampleResume('data_science')">Maya — AI / ML Specialist</button>
-              <button class="badge-chip" onclick="app.loadSampleResume('junior')">Jordan — Career Switcher</button>
+              <span class="text-muted"><i class="fa-solid fa-user-tag"></i> Quick Samples:</span>
+              <button class="badge-chip" onclick="app.loadSampleResume('tech')">Alex (Software)</button>
+              <button class="badge-chip" onclick="app.loadSampleResume('product')">Sarah (Product)</button>
+              <button class="badge-chip" onclick="app.loadSampleResume('marketing')">Marcus (Marketing)</button>
+              <button class="badge-chip" onclick="app.loadSampleResume('sales')">Elena (Sales)</button>
+              <button class="badge-chip" onclick="app.loadSampleResume('healthcare')">David (Nursing)</button>
+              <button class="badge-chip" onclick="app.loadSampleResume('finance')">Rachel (Finance)</button>
+              <button class="badge-chip" onclick="app.loadSampleResume('junior')">Jordan (Graduate)</button>
             </div>
           </div>
 
@@ -315,9 +341,9 @@
           <div class="pro-card empty-results-state" id="analyzerEmptyState">
             <div class="empty-icon"><i class="fa-solid fa-file-circle-question"></i></div>
             <h3>No Resume Analyzed Yet</h3>
-            <p>Upload your resume or choose one of the sample profiles above to inspect ATS parse compatibility, keyword coverage, and recruiter recommendations.</p>
-            <button class="btn btn-primary" onclick="app.loadSampleResume('fullstack')">
-              <i class="fa-solid fa-play"></i> Load Sample Evaluation
+            <p>Upload your resume file or pick any sample profile above to see how ATS scanners parse your experience, count quantifiable metrics, and score keywords.</p>
+            <button class="btn btn-primary" onclick="app.loadSampleResume(app.currentIndustry || 'tech')">
+              <i class="fa-solid fa-play"></i> Load Sample for My Field
             </button>
           </div>
 
@@ -336,11 +362,11 @@
               </div>
 
               <div class="breakdown-bars">
-                <h4><i class="fa-solid fa-chart-column"></i> Multi-Dimensional ATS Evaluation</h4>
+                <h4><i class="fa-solid fa-chart-column"></i> 4-Dimensional ATS Scoring Breakdown</h4>
                 
                 <div class="breakdown-item">
                   <div class="breakdown-header">
-                    <span><i class="fa-solid fa-key"></i> Keyword & Skill Alignment (35%)</span>
+                    <span><i class="fa-solid fa-key"></i> Keyword & Skill Coverage (35%)</span>
                     <strong id="scoreKeywords">0/100</strong>
                   </div>
                   <div class="meter-bar"><div class="meter-fill" id="meterKeywords" style="width: 0%"></div></div>
@@ -348,7 +374,7 @@
 
                 <div class="breakdown-item">
                   <div class="breakdown-header">
-                    <span><i class="fa-solid fa-calculator"></i> Measurable Impact & Action Verbs (25%)</span>
+                    <span><i class="fa-solid fa-calculator"></i> Quantifiable Metrics & Action Verbs (25%)</span>
                     <strong id="scoreImpact">0/100</strong>
                   </div>
                   <div class="meter-bar"><div class="meter-fill" id="meterImpact" style="width: 0%"></div></div>
@@ -356,7 +382,7 @@
 
                 <div class="breakdown-item">
                   <div class="breakdown-header">
-                    <span><i class="fa-solid fa-table-list"></i> Section Structure & Completeness (25%)</span>
+                    <span><i class="fa-solid fa-table-list"></i> Section Completeness & Layout (25%)</span>
                     <strong id="scoreSections">0/100</strong>
                   </div>
                   <div class="meter-bar"><div class="meter-fill" id="meterSections" style="width: 0%"></div></div>
@@ -375,11 +401,11 @@
             <!-- Strengths & Gaps Grid -->
             <div class="eval-grid">
               <div class="pro-card eval-card strengths-card">
-                <h4><i class="fa-solid fa-circle-check text-green"></i> Key Strengths</h4>
+                <h4><i class="fa-solid fa-circle-check text-green"></i> What You Did Well</h4>
                 <ul id="strengthsList" class="eval-list"></ul>
               </div>
               <div class="pro-card eval-card weaknesses-card">
-                <h4><i class="fa-solid fa-triangle-exclamation text-amber"></i> Recommended Improvements</h4>
+                <h4><i class="fa-solid fa-triangle-exclamation text-amber"></i> Priority Fixes to Make</h4>
                 <ul id="weaknessesList" class="eval-list"></ul>
               </div>
             </div>
@@ -387,25 +413,25 @@
             <!-- Extracted Skills -->
             <div class="pro-card">
               <div class="card-header">
-                <h3><i class="fa-solid fa-tags text-primary"></i> Extracted Skills & Competencies</h3>
+                <h3><i class="fa-solid fa-tags text-primary"></i> Skills Detected on Your Resume</h3>
                 <span class="pill" id="totalSkillsCount">0 Skills Detected</span>
               </div>
               <div class="skills-category-block">
-                <h5>Technical & Hard Skills</h5>
+                <h5>Core Professional & Technical Skills</h5>
                 <div class="skills-pill-group" id="extractedHardSkills"></div>
               </div>
               <div class="skills-category-block" style="margin-top: 14px;">
-                <h5>Domain, Leadership & Methodologies</h5>
+                <h5>Leadership, Operations & Domain Competencies</h5>
                 <div class="skills-pill-group" id="extractedSoftSkills"></div>
               </div>
             </div>
 
-            <!-- AI Bullet Point Rewrites -->
+            <!-- Bullet Rewrites -->
             <div class="pro-card">
               <div class="card-header">
-                <h3><i class="fa-solid fa-wand-magic-sparkles text-primary"></i> High-Impact Bullet Rewrites (XYZ Formula)</h3>
+                <h3><i class="fa-solid fa-wand-magic-sparkles text-primary"></i> High-Impact Bullet Rewrites (Google XYZ Formula)</h3>
                 <button class="btn btn-outline btn-xs" onclick="app.switchTab('copilot', 'bullet_optimizer')">
-                  <i class="fa-solid fa-pen"></i> Customize More
+                  <i class="fa-solid fa-pen"></i> Rewrite More
                 </button>
               </div>
               <div class="bullet-optimizations-list" id="bulletOptimizationsList"></div>
@@ -415,19 +441,19 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 3: SMART JOB MATCHER ==================== -->
+    <!-- ==================== TAB 3: SMART JOB MATCHER & INSTANT TAILOR ==================== -->
     <section id="tab-matcher" class="tab-pane">
       <div class="section-title-row">
         <div>
-          <h2><i class="fa-solid fa-briefcase text-primary"></i> Smart Job Matcher & Skill Gap Analysis</h2>
-          <p class="section-desc">Compare your background against real role requirements, calculate fit, and pinpoint what to emphasize.</p>
+          <h2><i class="fa-solid fa-briefcase text-primary"></i> Job Matcher & Instant Tailor Tool</h2>
+          <p class="section-desc">Paste any job posting from LinkedIn or Indeed, or select an open position to see your match score and missing keywords.</p>
         </div>
         <div class="btn-group">
-          <button class="btn btn-secondary btn-sm" onclick="app.openNewJobModal()">
-            <i class="fa-solid fa-plus"></i> Add Custom Job
+          <button class="btn btn-secondary btn-sm" onclick="app.openCustomMatchModal()">
+            <i class="fa-solid fa-paste"></i> Paste Custom Job Posting
           </button>
           <button class="btn btn-primary btn-sm" onclick="app.runBatchMatchForActiveResume()">
-            <i class="fa-solid fa-arrows-rotate"></i> Match Against All Jobs
+            <i class="fa-solid fa-arrows-rotate"></i> Match Against All Openings
           </button>
         </div>
       </div>
@@ -441,7 +467,7 @@
               <input type="text" id="jobSearchInput" placeholder="Search role title, company, or skills..." oninput="app.filterJobsList()" />
             </div>
             <div class="filter-chips">
-              <button class="filter-chip active" data-filter="all" onclick="app.setJobFilter('all', this)">All Roles</button>
+              <button class="filter-chip active" data-filter="all" onclick="app.setJobFilter('all', this)">All Careers</button>
               <button class="filter-chip" data-filter="Remote" onclick="app.setJobFilter('Remote', this)">Remote</button>
               <button class="filter-chip" data-filter="Senior" onclick="app.setJobFilter('Senior', this)">Senior</button>
               <button class="filter-chip" data-filter="Full-time" onclick="app.setJobFilter('Full-time', this)">Full-time</button>
@@ -457,8 +483,8 @@
         <div class="match-detail-column">
           <div class="pro-card empty-results-state" id="matchDetailEmptyState">
             <div class="empty-icon"><i class="fa-solid fa-hand-pointer"></i></div>
-            <h3>Select a Job Opening</h3>
-            <p>Click on any job listing to see your compatibility score, matched qualifications, and exact missing keywords.</p>
+            <h3>Select a Job Opening or Paste a Posting</h3>
+            <p>Click on any job in the list or paste a description from LinkedIn/Indeed to view keyword overlap and tailored application talking points.</p>
           </div>
 
           <div id="matchDetailContainer" style="display: none;">
@@ -469,7 +495,7 @@
                 <div>
                   <h3 id="matchJobTitle">Senior Full Stack Engineer</h3>
                   <div class="job-meta-pills" id="matchJobMetaPills" style="margin-top: 6px;">
-                    <span class="pill"><i class="fa-solid fa-building"></i> <span id="matchJobCompany">TechCorp</span></span>
+                    <span class="pill"><i class="fa-solid fa-building"></i> <span id="matchJobCompany">Company</span></span>
                     <span class="pill"><i class="fa-solid fa-location-dot"></i> <span id="matchJobLocation">Remote</span></span>
                     <span class="pill pill-green"><i class="fa-solid fa-money-bill-wave"></i> <span id="matchJobSalary">$140k - $180k</span></span>
                   </div>
@@ -503,20 +529,20 @@
 
             <!-- Skill Gap Breakdown -->
             <div class="pro-card">
-              <h4><i class="fa-solid fa-list-check text-primary"></i> Skill Overlap & Gap Matrix</h4>
+              <h4><i class="fa-solid fa-list-check text-primary"></i> Skill Overlap & Missing Keyword Matrix</h4>
               
               <div class="skills-gap-section" style="margin-top: 12px;">
-                <h5 style="color: var(--success);"><i class="fa-solid fa-check"></i> Skills You Possess:</h5>
+                <h5 style="color: var(--success);"><i class="fa-solid fa-check"></i> Keywords Found in Your Resume:</h5>
                 <div class="skills-pill-group" id="matchedSkillsPills" style="margin-top: 6px;"></div>
               </div>
 
               <div class="skills-gap-section" style="margin-top: 14px;">
-                <h5 style="color: var(--danger);"><i class="fa-solid fa-xmark"></i> Critical Missing Skills:</h5>
+                <h5 style="color: var(--danger);"><i class="fa-solid fa-xmark"></i> Critical Keywords Missing (Add These Before Applying):</h5>
                 <div class="skills-pill-group" id="missingCriticalPills" style="margin-top: 6px;"></div>
               </div>
 
               <div class="skills-gap-section" style="margin-top: 14px;">
-                <h5 style="color: var(--warning);"><i class="fa-solid fa-plus"></i> Nice-to-Have Skills:</h5>
+                <h5 style="color: var(--warning);"><i class="fa-solid fa-plus"></i> Nice-to-Have Bonus Skills:</h5>
                 <div class="skills-pill-group" id="missingNicePills" style="margin-top: 6px;"></div>
               </div>
             </div>
@@ -526,10 +552,10 @@
               <h4><i class="fa-solid fa-lightbulb text-amber"></i> Hiring Manager Advice & Action Plan</h4>
               <p class="fit-summary-text" id="matchFitSummary" style="margin-top: 10px;"></p>
               
-              <h5 style="margin-top: 14px; margin-bottom: 6px;"><i class="fa-solid fa-arrow-up-right-dots text-primary"></i> How to Position Your Application:</h5>
+              <h5 style="margin-top: 14px; margin-bottom: 6px;"><i class="fa-solid fa-arrow-up-right-dots text-primary"></i> How to Position Your Resume for This Job:</h5>
               <ul class="recommendation-list" id="matchRecsList"></ul>
 
-              <h5 style="margin-top: 14px; margin-bottom: 6px;"><i class="fa-solid fa-comments text-green"></i> Key Talking Points for Interviews:</h5>
+              <h5 style="margin-top: 14px; margin-bottom: 6px;"><i class="fa-solid fa-comments text-green"></i> Key Talking Points for Interview:</h5>
               <ul class="recommendation-list" id="matchInterviewPointsList"></ul>
             </div>
 
@@ -554,8 +580,8 @@
     <section id="tab-copilot" class="tab-pane">
       <div class="section-title-row">
         <div>
-          <h2><i class="fa-solid fa-compass-drafting text-primary"></i> Career Preparation Toolkit</h2>
-          <p class="section-desc">Generate role-tailored cover letters, sharpen accomplishment statements, and simulate realistic interview scenarios.</p>
+          <h2><i class="fa-solid fa-compass-drafting text-primary"></i> Universal Career Toolkit</h2>
+          <p class="section-desc">Create tailored cover letters, rewrite bullet points into measurable achievements, and practice interview questions.</p>
         </div>
       </div>
 
@@ -584,21 +610,21 @@
               <div class="form-row">
                 <div class="form-group" style="flex: 1;">
                   <label for="clJobTitle">Target Job Title *</label>
-                  <input type="text" id="clJobTitle" class="input-text" placeholder="e.g. Senior Backend Engineer" required />
+                  <input type="text" id="clJobTitle" class="input-text" placeholder="e.g. Marketing Manager, Nurse, Senior Engineer" required />
                 </div>
                 <div class="form-group" style="flex: 1;">
-                  <label for="clCompanyName">Company Name *</label>
-                  <input type="text" id="clCompanyName" class="input-text" placeholder="e.g. Datadog / Stripe" required />
+                  <label for="clCompanyName">Company / Organization *</label>
+                  <input type="text" id="clCompanyName" class="input-text" placeholder="e.g. Target Organization Name" required />
                 </div>
               </div>
 
               <div class="form-group">
                 <label for="clTone">Tone of Voice</label>
                 <select id="clTone" class="input-select">
-                  <option value="professional">Professional & Polished (Corporate / Enterprise)</option>
-                  <option value="enthusiastic">Enthusiastic & High Energy (Growth Stage)</option>
-                  <option value="startup">Builder Mindset (Early Stage / Startup)</option>
-                  <option value="executive">Executive & Strategic (Lead / Principal / Director)</option>
+                  <option value="professional">Professional & Polished (Standard / Corporate)</option>
+                  <option value="enthusiastic">Enthusiastic & High Energy (Growth Companies)</option>
+                  <option value="startup">Builder Mindset (Fast-paced / Startups)</option>
+                  <option value="executive">Executive & Strategic (Lead / Manager / Director)</option>
                 </select>
               </div>
 
@@ -609,7 +635,7 @@
 
               <div class="form-group">
                 <label for="clCustomNotes">Specific Achievements to Highlight (Optional)</label>
-                <input type="text" id="clCustomNotes" class="input-text" placeholder="e.g. Led migration to microservices, improved latency by 45%" />
+                <input type="text" id="clCustomNotes" class="input-text" placeholder="e.g. Grew regional revenue by 32%, reduced patient intake delays..." />
               </div>
 
               <button type="submit" class="btn btn-primary btn-block" id="btnGenCoverLetter">
@@ -633,11 +659,6 @@
                 <p>Provide the job details on the left to generate an authentic, persuasive cover letter matching your experience to the role.</p>
               </div>
             </div>
-
-            <div class="selling-points-wrap" id="clSellingPointsWrap" style="display: none;">
-              <h5><i class="fa-solid fa-star text-amber"></i> Key Selling Points Emphasized:</h5>
-              <ul id="clSellingPointsList" class="points-list"></ul>
-            </div>
           </div>
         </div>
       </div>
@@ -648,19 +669,19 @@
           <div class="pro-card">
             <h3><i class="fa-solid fa-pen-fancy text-primary"></i> Resume Bullets to Upgrade</h3>
             <p class="text-secondary" style="font-size: 0.88rem; margin-top: 4px; margin-bottom: 14px;">
-              Transform routine task lists into high-impact accomplishment bullets using the Google XYZ formula: <em>"Accomplished [X], as measured by [Y], by doing [Z]"</em>.
+              Transform passive task lists into high-impact accomplishment bullets using the Google XYZ formula: <em>"Accomplished [X], as measured by [Y], by doing [Z]"</em>.
             </p>
             
             <div class="form-group">
-              <label for="boTargetRole">Target Role</label>
-              <input type="text" id="boTargetRole" class="input-text" placeholder="e.g. Senior Backend Engineer" value="Software Engineer" />
+              <label for="boTargetRole">Target Role or Profession</label>
+              <input type="text" id="boTargetRole" class="input-text" placeholder="e.g. Marketing Lead, Financial Analyst, Nurse, Engineer" value="Software Engineer" />
             </div>
 
             <div class="form-group">
               <label for="boBulletsInput">Enter Bullet Points (One per line):</label>
-              <textarea id="boBulletsInput" class="input-textarea" rows="6" placeholder="Built backend APIs and resolved issues
-Maintained PostgreSQL database queries
-Worked on frontend components for user dashboard"></textarea>
+              <textarea id="boBulletsInput" class="input-textarea" rows="6" placeholder="Managed client communication and resolved support requests
+Responsible for quarterly financial reports and budget tracking
+Created marketing campaigns on social media"></textarea>
             </div>
 
             <button type="button" class="btn btn-primary btn-block" id="btnOptimizeBullets" onclick="app.optimizeBulletPoints()">
@@ -689,11 +710,11 @@ Worked on frontend components for user dashboard"></textarea>
             <h3><i class="fa-solid fa-user-tie text-primary"></i> Interview Simulation Setup</h3>
             <div class="form-group" style="margin-top: 14px;">
               <label for="ipJobTitle">Interview Role Title *</label>
-              <input type="text" id="ipJobTitle" class="input-text" placeholder="e.g. Senior Software Engineer" value="Senior Software Engineer" />
+              <input type="text" id="ipJobTitle" class="input-text" placeholder="e.g. Senior Marketing Specialist, Nurse, Engineer" value="Senior Specialist" />
             </div>
             <div class="form-group">
-              <label for="ipJobDesc">Key Technical Topics or Job Focus Areas</label>
-              <textarea id="ipJobDesc" class="input-textarea" rows="4" placeholder="e.g. System Design, REST APIs, Microservices, Database Optimization, Distributed Systems"></textarea>
+              <label for="ipJobDesc">Key Role Priorities or Requirements</label>
+              <textarea id="ipJobDesc" class="input-textarea" rows="4" placeholder="e.g. Stakeholder Management, Campaign Optimization, Team Leadership, Clinical Protocol"></textarea>
             </div>
             <div class="form-group">
               <label for="ipQuestionCount">Number of Questions</label>
@@ -715,7 +736,7 @@ Worked on frontend components for user dashboard"></textarea>
             <div class="interview-questions-list" id="interviewQuestionsResults">
               <div class="empty-results-state">
                 <i class="fa-solid fa-microphone-lines empty-icon"></i>
-                <p>Simulate realistic behavioral and technical interview questions with STAR-structured response guides.</p>
+                <p>Simulate realistic behavioral and situational interview questions with STAR-structured response guides.</p>
               </div>
             </div>
           </div>
@@ -728,10 +749,10 @@ Worked on frontend components for user dashboard"></textarea>
           <div class="roadmap-header-row">
             <div>
               <h3><i class="fa-solid fa-route text-primary"></i> Structured Skill Progression Plan</h3>
-              <p class="text-secondary" style="font-size: 0.88rem;">Close technical gaps to transition into higher-level positions.</p>
+              <p class="text-secondary" style="font-size: 0.88rem;">Close skill gaps to transition into higher-level positions.</p>
             </div>
             <div class="roadmap-inputs">
-              <input type="text" id="roadmapTargetRole" class="input-text" placeholder="Target Role e.g. Staff Cloud Architect" value="Staff Cloud Architect" />
+              <input type="text" id="roadmapTargetRole" class="input-text" placeholder="Target Role e.g. Senior Director of Operations" value="Senior Director of Operations" />
               <button class="btn btn-primary" onclick="app.generateCareerRoadmap()"><i class="fa-solid fa-compass"></i> Generate Plan</button>
             </div>
           </div>
@@ -805,56 +826,40 @@ Worked on frontend components for user dashboard"></textarea>
 
   <!-- ==================== MODALS ==================== -->
 
-  <!-- 1. Post New Job Modal -->
-  <dialog id="newJobModal" class="custom-modal">
+  <!-- Custom Job Matcher Modal (Paste ANY job from LinkedIn / Indeed) -->
+  <dialog id="customMatchModal" class="custom-modal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-briefcase text-primary"></i> Add Custom Job Opportunity</h3>
-        <button class="btn-close" onclick="document.getElementById('newJobModal').close()">&times;</button>
+        <h3><i class="fa-solid fa-paste text-primary"></i> Paste Any Job Description to Match</h3>
+        <button class="btn-close" onclick="document.getElementById('customMatchModal').close()">&times;</button>
       </div>
-      <form id="newJobForm" onsubmit="event.preventDefault(); app.submitNewJob();">
-        <div class="modal-body">
-          <div class="form-row">
-            <div class="form-group" style="flex: 1;">
-              <label for="njTitle">Job Title *</label>
-              <input type="text" id="njTitle" class="input-text" placeholder="e.g. Senior Backend Engineer" required />
-            </div>
-            <div class="form-group" style="flex: 1;">
-              <label for="njCompany">Company Name *</label>
-              <input type="text" id="njCompany" class="input-text" placeholder="e.g. Stripe / Datadog" required />
-            </div>
+      <div class="modal-body">
+        <p class="text-secondary" style="font-size: 0.88rem; margin-bottom: 14px;">
+          Copy any job posting from LinkedIn, Indeed, or a company careers page. We'll instantly calculate your match score and highlight the exact missing keywords.
+        </p>
+        <div class="form-row">
+          <div class="form-group" style="flex: 1;">
+            <label for="cmJobTitle">Role Title *</label>
+            <input type="text" id="cmJobTitle" class="input-text" placeholder="e.g. Senior Marketing Manager" required />
           </div>
-
-          <div class="form-row">
-            <div class="form-group" style="flex: 1;">
-              <label for="njLocation">Location</label>
-              <input type="text" id="njLocation" class="input-text" placeholder="Remote / San Francisco, CA" value="Remote" />
-            </div>
-            <div class="form-group" style="flex: 1;">
-              <label for="njSalary">Salary Range</label>
-              <input type="text" id="njSalary" class="input-text" placeholder="$140,000 - $180,000" value="$140k - $180k" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="njSkills">Required Skills (Comma separated)</label>
-            <input type="text" id="njSkills" class="input-text" placeholder="Python, FastAPI, Docker, PostgreSQL, Redis, Kubernetes" />
-          </div>
-
-          <div class="form-group">
-            <label for="njDescription">Job Description & Responsibilities *</label>
-            <textarea id="njDescription" class="input-textarea" rows="5" placeholder="Paste the job description and requirements here..." required></textarea>
+          <div class="form-group" style="flex: 1;">
+            <label for="cmCompany">Company Name</label>
+            <input type="text" id="cmCompany" class="input-text" placeholder="e.g. Target Company" value="Target Company" />
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline" onclick="document.getElementById('newJobModal').close()">Cancel</button>
-          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Job</button>
+        <div class="form-group">
+          <label for="cmJobDesc">Paste Job Description *</label>
+          <textarea id="cmJobDesc" class="input-textarea" rows="7" placeholder="Paste full job description requirements here..." required></textarea>
         </div>
-      </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="document.getElementById('customMatchModal').close()">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="app.submitCustomJobMatch()"><i class="fa-solid fa-bullseye"></i> Calculate Match & Keywords</button>
+      </div>
     </div>
   </dialog>
 
-  <!-- 2. Add New Application Modal -->
+  <!-- Add Application Modal -->
   <dialog id="newAppModal" class="custom-modal">
     <div class="modal-card">
       <div class="modal-header">
@@ -865,12 +870,12 @@ Worked on frontend components for user dashboard"></textarea>
         <div class="modal-body">
           <div class="form-row">
             <div class="form-group" style="flex: 1;">
-              <label for="naCompany">Company Name *</label>
-              <input type="text" id="naCompany" class="input-text" placeholder="e.g. Notion" required />
+              <label for="naCompany">Company / Organization *</label>
+              <input type="text" id="naCompany" class="input-text" placeholder="e.g. Notion / Mayo Clinic / Nike" required />
             </div>
             <div class="form-group" style="flex: 1;">
               <label for="naJobTitle">Job Title *</label>
-              <input type="text" id="naJobTitle" class="input-text" placeholder="e.g. Senior Frontend Engineer" required />
+              <input type="text" id="naJobTitle" class="input-text" placeholder="e.g. Marketing Lead" required />
             </div>
           </div>
 
@@ -886,13 +891,13 @@ Worked on frontend components for user dashboard"></textarea>
             </div>
             <div class="form-group" style="flex: 1;">
               <label for="naSalary">Target Salary</label>
-              <input type="text" id="naSalary" class="input-text" placeholder="$150,000" />
+              <input type="text" id="naSalary" class="input-text" placeholder="$120,000" />
             </div>
           </div>
 
           <div class="form-group">
             <label for="naNotes">Notes & Follow-ups</label>
-            <textarea id="naNotes" class="input-textarea" rows="3" placeholder="Recruiter name, referral notes, upcoming interview dates..."></textarea>
+            <textarea id="naNotes" class="input-textarea" rows="3" placeholder="Recruiter name, referral contacts, interview dates..."></textarea>
           </div>
         </div>
         <div class="modal-footer">
@@ -903,7 +908,7 @@ Worked on frontend components for user dashboard"></textarea>
     </div>
   </dialog>
 
-  <!-- 3. Settings Modal -->
+  <!-- Settings Modal -->
   <dialog id="settingsModal" class="custom-modal">
     <div class="modal-card">
       <div class="modal-header">
@@ -919,15 +924,15 @@ Worked on frontend components for user dashboard"></textarea>
 
         <div class="form-group">
           <label for="userApiKeyInput">Custom API Key (Optional)</label>
-          <input type="password" id="userApiKeyInput" class="input-text" placeholder="sk-... (Stored securely in your local browser storage)" />
-          <small class="text-muted">When empty, the server's configured environment keys or smart local NLP heuristic engine is used automatically.</small>
+          <input type="password" id="userApiKeyInput" class="input-text" placeholder="sk-... (Stored securely in local browser storage)" />
+          <small class="text-muted">When empty, the local smart NLP heuristic engine and client models run with zero setup.</small>
         </div>
 
         <div class="system-status-box">
           <div class="status-indicator-dot"></div>
           <div>
-            <strong>Privacy & Engine Status: Ready</strong>
-            <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">Data processed with strict privacy controls. Local NLP engine available offline.</p>
+            <strong>100% Privacy & Universal Client Engine Active</strong>
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">In-browser PDF parser and heuristic matcher ready for all industries.</p>
           </div>
         </div>
       </div>
