@@ -14,6 +14,13 @@ import urllib.error
 import dulwich.repo
 import dulwich.porcelain
 
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 def create_github_repo(token, repo_name="AI_Resume_Analyzer_Job_Matcher", description=None, private=False):
     url = "https://api.github.com/user/repos"
     payload = {
