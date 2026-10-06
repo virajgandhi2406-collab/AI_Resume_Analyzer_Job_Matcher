@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ResumePulse AI | Intelligent ATS Analyzer & Job Matcher</title>
+  <meta name="description" content="Next-Gen AI Resume Analyzer, ATS Score Optimizer, Smart Job Matcher, and Automated Career Copilot." />
+  
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons for clean UI -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="dark-theme">
+  <!-- Dynamic Background Glow Elements -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-glow bg-glow-3"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-bolt-lightning"></i>
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">ResumePulse <span class="gradient-text">AI</span></span>
+        <span class="brand-subtitle">Smart ATS & Job Matcher</span>
+      </div>
+      <span class="badge ai-live-badge"><span class="pulse-dot"></span> AI Engine Live</span>
+    </div>
+
+    <nav class="nav-links">
+      <button class="nav-item active" data-tab="dashboard">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" data-tab="analyzer">
+        <i class="fa-solid fa-file-waveform"></i>
+        <span>ATS Analyzer</span>
+      </button>
+      <button class="nav-item" data-tab="matcher">
+        <i class="fa-solid fa-crosshairs"></i>
+        <span>Job Matcher</span>
+      </button>
+      <button class="nav-item" data-tab="copilot">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>AI Copilot Suite</span>
+      </button>
+      <button class="nav-item" data-tab="tracker">
+        <i class="fa-solid fa-list-check"></i>
+        <span>Application Kanban</span>
+      </button>
+    </nav>
+
+    <div class="nav-actions">
+      <div class="ai-provider-select">
+        <label for="providerSelector"><i class="fa-solid fa-microchip"></i></label>
+        <select id="providerSelector" title="Select AI Engine Provider">
+          <option value="auto">Auto AI (Smart Routing)</option>
+          <option value="gemini">Google Gemini 1.5</option>
+          <option value="openai">OpenAI GPT-4o</option>
+          <option value="groq">Groq LLaMA 3.1</option>
+          <option value="local_nlp">Local NLP Heuristic</option>
+        </select>
+      </div>
+
+      <button id="btnQuickDemo" class="btn btn-secondary btn-sm" title="Preload Alex Rivera demo data">
+        <i class="fa-solid fa-wand-sparkles"></i> <span>Load Demo</span>
+      </button>
+
+      <button id="btnSettingsModal" class="btn btn-icon" title="Settings & API Keys">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container Viewports -->
+  <main class="main-content">
+    
+    <!-- ==================== TAB 1: DASHBOARD OVERVIEW ==================== -->
+    <section id="tab-dashboard" class="tab-pane active">
+      <div class="hero-banner glass-card">
+        <div class="hero-content">
+          <div class="hero-tag"><i class="fa-solid fa-sparkles"></i> AI Career Copilot 2026</div>
+          <h1 class="hero-title">Optimize Your Resume for <span class="gradient-text">Top Tier Tech Roles</span></h1>
+          <p class="hero-desc">
+            Instantly evaluate ATS keyword pass rates, uncover hidden skill gaps, match against real job descriptions, and generate tailored cover letters and interview strategies in seconds.
+          </p>
+          <div class="hero-cta-group">
+            <button class="btn btn-primary" onclick="app.switchTab('analyzer')">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Analyze Resume Now
+            </button>
+            <button class="btn btn-outline" onclick="app.switchTab('matcher')">
+              <i class="fa-solid fa-magnifying-glass-chart"></i> Match Opportunities
+            </button>
+          </div>
+        </div>
+        <div class="hero-stats-panel">
+          <div class="mini-stat-card">
+            <div class="stat-icon-wrapper purple"><i class="fa-solid fa-file-invoice"></i></div>
+            <div>
+              <h3 id="statTotalResumes">0</h3>
+              <p>Resumes Analyzed</p>
+            </div>
+          </div>
+          <div class="mini-stat-card">
+            <div class="stat-icon-wrapper cyan"><i class="fa-solid fa-gauge-high"></i></div>
+            <div>
+              <h3 id="statAvgAts">0%</h3>
+              <p>Avg ATS Compatibility</p>
+            </div>
+          </div>
+          <div class="mini-stat-card">
+            <div class="stat-icon-wrapper green"><i class="fa-solid fa-briefcase"></i></div>
+            <div>
+              <h3 id="statTotalJobs">0</h3>
+              <p>Active Job Openings</p>
+            </div>
+          </div>
+          <div class="mini-stat-card">
+            <div class="stat-icon-wrapper amber"><i class="fa-solid fa-diagram-project"></i></div>
+            <div>
+              <h3 id="statTotalMatches">0</h3>
+              <p>Match Analyses Run</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid: Funnel + Market Trends + Recent Activity -->
+      <div class="dashboard-grid">
+        <!-- Pipeline Funnel -->
+        <div class="glass-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-filter"></i> Application Pipeline Funnel</h3>
+            <span class="badge">Live</span>
+          </div>
+          <div class="pipeline-funnel" id="dashboardPipelineFunnel">
+            <div class="funnel-row">
+              <span class="funnel-label"><i class="fa-solid fa-bookmark text-muted"></i> Wishlist</span>
+              <div class="funnel-bar-bg"><div class="funnel-bar-fill fill-wishlist" id="barWishlist" style="width: 20%"></div></div>
+              <span class="funnel-count" id="countWishlist">0</span>
+            </div>
+            <div class="funnel-row">
+              <span class="funnel-label"><i class="fa-solid fa-paper-plane text-cyan"></i> Applied</span>
+              <div class="funnel-bar-bg"><div class="funnel-bar-fill fill-applied" id="barApplied" style="width: 40%"></div></div>
+              <span class="funnel-count" id="countApplied">0</span>
+            </div>
+            <div class="funnel-row">
+              <span class="funnel-label"><i class="fa-solid fa-comments text-amber"></i> Interviewing</span>
+              <div class="funnel-bar-bg"><div class="funnel-bar-fill fill-interview" id="barInterview" style="width: 30%"></div></div>
+              <span class="funnel-count" id="countInterview">0</span>
+            </div>
+            <div class="funnel-row">
+              <span class="funnel-label"><i class="fa-solid fa-trophy text-green"></i> Offer</span>
+              <div class="funnel-bar-bg"><div class="funnel-bar-fill fill-offer" id="barOffer" style="width: 15%"></div></div>
+              <span class="funnel-count" id="countOffer">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- In-Demand Market Skills -->
+        <div class="glass-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-fire text-amber"></i> High-Demand Skills</h3>
+            <span class="badge badge-subtle">Top Vacancies</span>
+          </div>
+          <div class="top-skills-cloud" id="dashboardSkillsCloud">
+            <div class="loading-state"><i class="fa-solid fa-circle-notch fa-spin"></i> Fetching market insights...</div>
+          </div>
+        </div>
+
+        <!-- Quick Launch Actions -->
+        <div class="glass-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-rocket text-purple"></i> Quick Actions</h3>
+          </div>
+          <div class="quick-action-list">
+            <button class="action-item" onclick="app.switchTab('analyzer')">
+              <div class="action-icon purple"><i class="fa-solid fa-file-arrow-up"></i></div>
+              <div class="action-meta">
+                <strong>Upload Resume</strong>
+                <span>Parse PDF/DOCX and compute ATS Score</span>
+              </div>
+              <i class="fa-solid fa-chevron-right action-arrow"></i>
+            </button>
+
+            <button class="action-item" onclick="app.switchTab('copilot', 'cover_letter')">
+              <div class="action-icon cyan"><i class="fa-solid fa-feather-pointed"></i></div>
+              <div class="action-meta">
+                <strong>Write Cover Letter</strong>
+                <span>AI tailored to specific company & role</span>
+              </div>
+              <i class="fa-solid fa-chevron-right action-arrow"></i>
+            </button>
+
+            <button class="action-item" onclick="app.switchTab('copilot', 'bullet_optimizer')">
+              <div class="action-icon green"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+              <div class="action-meta">
+                <strong>Optimize Bullet Points</strong>
+                <span>Transform duties into Google XYZ metrics</span>
+              </div>
+              <i class="fa-solid fa-chevron-right action-arrow"></i>
+            </button>
+
+            <button class="action-item" onclick="app.switchTab('copilot', 'interview_prep')">
+              <div class="action-icon amber"><i class="fa-solid fa-user-astronaut"></i></div>
+              <div class="action-meta">
+                <strong>Interview Prep Coach</strong>
+                <span>Generate role-specific STAR Q&As</span>
+              </div>
+              <i class="fa-solid fa-chevron-right action-arrow"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: ATS RESUME ANALYZER ==================== -->
+    <section id="tab-analyzer" class="tab-pane">
+      <div class="section-title-row">
+        <div>
+          <h2><i class="fa-solid fa-file-waveform text-gradient"></i> ATS Resume Scorecard & Optimizer</h2>
+          <p class="section-desc">Evaluate your resume against industry Applicant Tracking Systems with deep keyword extraction & metrics scoring.</p>
+        </div>
+        <div class="resume-selector-wrap">
+          <select id="savedResumesSelect" class="input-select" onchange="app.handleSavedResumeSelect(this.value)">
+            <option value="">-- Load Analyzed Resume --</option>
+          </select>
+          <button id="btnExportPdf" class="btn btn-secondary btn-sm" disabled onclick="app.exportCurrentResumePdf()">
+            <i class="fa-solid fa-file-pdf"></i> Download PDF Scorecard
+          </button>
+        </div>
+      </div>
+
+      <div class="analyzer-layout">
+        <!-- Left: Upload / Input Column -->
+        <div class="analyzer-input-col">
+          <div class="glass-card">
+            <div class="tabs-subnav">
+              <button class="subtab-btn active" data-subtab="file-upload">
+                <i class="fa-solid fa-file-arrow-up"></i> Upload Document
+              </button>
+              <button class="subtab-btn" data-subtab="raw-text">
+                <i class="fa-solid fa-align-left"></i> Paste Raw Text
+              </button>
+            </div>
+
+            <!-- Subtab 1: File Upload -->
+            <div id="subtab-file-upload" class="subtab-pane active">
+              <div class="drop-zone" id="resumeDropZone">
+                <input type="file" id="resumeFileInput" accept=".pdf,.docx,.txt" class="file-input-hidden" />
+                <div class="drop-zone-content">
+                  <div class="drop-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                  <h4>Drag & Drop your resume here</h4>
+                  <p>Supports <strong>PDF, DOCX, TXT</strong> (Max 15MB)</p>
+                  <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('resumeFileInput').click()">
+                    <i class="fa-solid fa-folder-open"></i> Browse Files
+                  </button>
+                </div>
+                <div id="fileUploadProgress" class="file-progress-bar" style="display: none;">
+                  <div class="progress-fill"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Subtab 2: Raw Text -->
+            <div id="subtab-raw-text" class="subtab-pane">
+              <div class="form-group">
+                <label for="rawResumeText">Paste Resume Content:</label>
+                <textarea id="rawResumeText" class="input-textarea" rows="9" placeholder="Paste full resume text here..."></textarea>
+              </div>
+              <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                  <label for="rawTargetTitle">Target Job Role:</label>
+                  <input type="text" id="rawTargetTitle" class="input-text" placeholder="e.g. Senior Full Stack Engineer" />
+                </div>
+                <button type="button" class="btn btn-primary" id="btnAnalyzeRawText" onclick="app.analyzeRawResumeText()" style="align-self: flex-end; margin-bottom: 2px;">
+                  <i class="fa-solid fa-bolt"></i> Analyze Text
+                </button>
+              </div>
+            </div>
+
+            <!-- Pre-made Demo Resumes for Instant Testing -->
+            <div class="demo-samples-row">
+              <span class="text-muted"><i class="fa-solid fa-flask"></i> Quick Samples:</span>
+              <button class="badge-chip" onclick="app.loadSampleResume('fullstack')">Senior Full Stack (88 ATS)</button>
+              <button class="badge-chip" onclick="app.loadSampleResume('data_science')">AI/ML Engineer (92 ATS)</button>
+              <button class="badge-chip" onclick="app.loadSampleResume('junior')">Entry-Level Junior (58 ATS)</button>
+            </div>
+          </div>
+
+          <!-- Parsed Contact Details Card (Auto populates) -->
+          <div class="glass-card" id="candidateProfileCard" style="display: none;">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-id-card-clip text-cyan"></i> Candidate Identity & Contact</h3>
+            </div>
+            <div class="candidate-meta-grid" id="candidateMetaGrid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Results & Scorecard Column -->
+        <div class="analyzer-results-col">
+          <!-- Empty State -->
+          <div class="glass-card empty-results-state" id="analyzerEmptyState">
+            <div class="empty-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+            <h3>No Resume Analyzed Yet</h3>
+            <p>Upload your resume file or paste text to generate comprehensive ATS scoring, keyword frequency, and optimization recommendations.</p>
+            <button class="btn btn-primary" onclick="app.loadSampleResume('fullstack')">
+              <i class="fa-solid fa-play"></i> Try Sample Analysis
+            </button>
+          </div>
+
+          <!-- Active Analysis Results Container -->
+          <div id="analyzerResultsContainer" style="display: none;">
+            <!-- Overall Score & Breakdown Ring -->
+            <div class="glass-card score-summary-card">
+              <div class="score-dial-wrap">
+                <div class="circular-progress" id="scoreDial">
+                  <div class="inner-circle">
+                    <span class="score-number" id="atsScoreValue">0</span>
+                    <span class="score-label">ATS Score</span>
+                  </div>
+                </div>
+                <div class="score-status-tag" id="atsScoreBadge">Analyzing</div>
+              </div>
+
+              <div class="breakdown-bars">
+                <h4><i class="fa-solid fa-chart-column"></i> Multi-Dimensional Breakdown</h4>
+                
+                <div class="breakdown-item">
+                  <div class="breakdown-header">
+                    <span><i class="fa-solid fa-key"></i> Keyword & Skill Breadth (35%)</span>
+                    <strong id="scoreKeywords">0/100</strong>
+                  </div>
+                  <div class="meter-bar"><div class="meter-fill" id="meterKeywords" style="width: 0%"></div></div>
+                </div>
+
+                <div class="breakdown-item">
+                  <div class="breakdown-header">
+                    <span><i class="fa-solid fa-bolt"></i> Quantifiable Metrics & Action Verbs (25%)</span>
+                    <strong id="scoreImpact">0/100</strong>
+                  </div>
+                  <div class="meter-bar"><div class="meter-fill" id="meterImpact" style="width: 0%"></div></div>
+                </div>
+
+                <div class="breakdown-item">
+                  <div class="breakdown-header">
+                    <span><i class="fa-solid fa-table-cells-large"></i> Section Completeness & Layout (25%)</span>
+                    <strong id="scoreSections">0/100</strong>
+                  </div>
+                  <div class="meter-bar"><div class="meter-fill" id="meterSections" style="width: 0%"></div></div>
+                </div>
+
+                <div class="breakdown-item">
+                  <div class="breakdown-header">
+                    <span><i class="fa-solid fa-align-left"></i> Formatting, Length & Readability (15%)</span>
+                    <strong id="scoreFormatting">0/100</strong>
+                  </div>
+                  <div class="meter-bar"><div class="meter-fill" id="meterFormatting" style="width: 0%"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Strengths & Weaknesses Grid -->
+            <div class="eval-grid">
+              <div class="glass-card eval-card strengths-card">
+                <h4><i class="fa-solid fa-circle-check text-green"></i> Key Strengths Found</h4>
+                <ul id="strengthsList" class="eval-list"></ul>
+              </div>
+              <div class="glass-card eval-card weaknesses-card">
+                <h4><i class="fa-solid fa-triangle-exclamation text-amber"></i> Critical ATS Gaps to Fix</h4>
+                <ul id="weaknessesList" class="eval-list"></ul>
+              </div>
+            </div>
+
+            <!-- Extracted Skills Showcase -->
+            <div class="glass-card">
+              <div class="card-header">
+                <h3><i class="fa-solid fa-tags text-purple"></i> Recognized Skills & Keywords</h3>
+                <span class="badge badge-subtle" id="totalSkillsCount">0 Skills Detected</span>
+              </div>
+              <div class="skills-category-block">
+                <h5>Hard & Technical Skills</h5>
+                <div class="skills-pill-group" id="extractedHardSkills"></div>
+              </div>
+              <div class="skills-category-block" style="margin-top: 14px;">
+                <h5>Soft & Leadership Competencies</h5>
+                <div class="skills-pill-group" id="extractedSoftSkills"></div>
+              </div>
+            </div>
+
+            <!-- AI Bullet Point Transformations -->
+            <div class="glass-card">
+              <div class="card-header">
+                <h3><i class="fa-solid fa-wand-magic-sparkles text-cyan"></i> AI Bullet Point Rewrites (Google XYZ Formula)</h3>
+                <button class="btn btn-outline btn-xs" onclick="app.switchTab('copilot', 'bullet_optimizer')">
+                  <i class="fa-solid fa-plus"></i> Optimize More Bullets
+                </button>
+              </div>
+              <div class="bullet-optimizations-list" id="bulletOptimizationsList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: SMART JOB MATCHER ==================== -->
+    <section id="tab-matcher" class="tab-pane">
+      <div class="section-title-row">
+        <div>
+          <h2><i class="fa-solid fa-crosshairs text-gradient"></i> Intelligent Job Matcher & Skill Gap Matrix</h2>
+          <p class="section-desc">Compare your profile against open positions, calculate semantic relevance, and pinpoint exact missing requirements.</p>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary btn-sm" onclick="app.openNewJobModal()">
+            <i class="fa-solid fa-plus"></i> Post / Add Custom Job
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="app.runBatchMatchForActiveResume()">
+            <i class="fa-solid fa-bolt"></i> Batch Match All Jobs
+          </button>
+        </div>
+      </div>
+
+      <div class="matcher-layout">
+        <!-- Left: Job Opportunities List + Search -->
+        <div class="jobs-column">
+          <div class="glass-card jobs-filter-bar">
+            <div class="search-input-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="jobSearchInput" placeholder="Search title, tech stack, company..." oninput="app.filterJobsList()" />
+            </div>
+            <div class="filter-chips">
+              <button class="filter-chip active" data-filter="all" onclick="app.setJobFilter('all', this)">All</button>
+              <button class="filter-chip" data-filter="Remote" onclick="app.setJobFilter('Remote', this)">Remote</button>
+              <button class="filter-chip" data-filter="Senior" onclick="app.setJobFilter('Senior', this)">Senior</button>
+              <button class="filter-chip" data-filter="Full-time" onclick="app.setJobFilter('Full-time', this)">Full-time</button>
+            </div>
+          </div>
+
+          <div class="jobs-list" id="jobsListContainer">
+            <div class="loading-state"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading job database...</div>
+          </div>
+        </div>
+
+        <!-- Right: Realtime Match Detail & Skill Gap Visualizer -->
+        <div class="match-detail-column">
+          <div class="glass-card empty-results-state" id="matchDetailEmptyState">
+            <div class="empty-icon"><i class="fa-solid fa-hand-pointer"></i></div>
+            <h3>Select a Job to Evaluate Fit</h3>
+            <p>Click on any job from the list or batch-evaluate your uploaded resume to view comprehensive match analysis and skill gap diagnostics.</p>
+          </div>
+
+          <div id="matchDetailContainer" style="display: none;">
+            <!-- Match Header Card -->
+            <div class="glass-card match-hero-card">
+              <div class="match-hero-main">
+                <div class="company-badge-large" id="matchJobCompanyLogo"><i class="fa-solid fa-building"></i></div>
+                <div>
+                  <h3 id="matchJobTitle">Senior Full Stack Engineer</h3>
+                  <div class="job-meta-pills" id="matchJobMetaPills">
+                    <span class="pill"><i class="fa-solid fa-building"></i> <span id="matchJobCompany">Stripe</span></span>
+                    <span class="pill"><i class="fa-solid fa-location-dot"></i> <span id="matchJobLocation">Remote</span></span>
+                    <span class="pill pill-green"><i class="fa-solid fa-money-bill-wave"></i> <span id="matchJobSalary">$150k - $190k</span></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="match-score-badge-large" id="matchScoreContainer">
+                <div class="match-pct-text"><span id="matchScoreVal">0</span>%</div>
+                <div class="match-pct-sub">Compatibility Score</div>
+              </div>
+            </div>
+
+            <!-- Score Sub-Dimensions -->
+            <div class="glass-card">
+              <h4><i class="fa-solid fa-chart-simple"></i> Match Breakdown Scores</h4>
+              <div class="match-metrics-row">
+                <div class="metric-box">
+                  <div class="metric-val" id="metricSkillsScore">0%</div>
+                  <div class="metric-lbl">Skills Overlap</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-val" id="metricExpScore">0%</div>
+                  <div class="metric-lbl">Experience Level</div>
+                </div>
+                <div class="metric-box">
+                  <div class="metric-val" id="metricSemanticScore">0%</div>
+                  <div class="metric-lbl">Semantic Relevance</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Skill Gap Matrix -->
+            <div class="glass-card">
+              <div class="card-header">
+                <h4><i class="fa-solid fa-arrows-split-up-and-left text-cyan"></i> Skill Gap & Overlap Matrix</h4>
+              </div>
+              
+              <div class="skills-gap-section">
+                <h5 class="text-green"><i class="fa-solid fa-check-double"></i> Matched Skills You Have:</h5>
+                <div class="skills-pill-group" id="matchedSkillsPills"></div>
+              </div>
+
+              <div class="skills-gap-section" style="margin-top: 14px;">
+                <h5 class="text-red"><i class="fa-solid fa-circle-xmark"></i> Critical Missing Skills in Resume:</h5>
+                <div class="skills-pill-group" id="missingCriticalPills"></div>
+              </div>
+
+              <div class="skills-gap-section" style="margin-top: 14px;">
+                <h5 class="text-amber"><i class="fa-solid fa-circle-question"></i> Nice-to-Have Skills:</h5>
+                <div class="skills-pill-group" id="missingNicePills"></div>
+              </div>
+            </div>
+
+            <!-- AI Tailored Recommendations & Interview Strategy -->
+            <div class="glass-card">
+              <div class="card-header">
+                <h4><i class="fa-solid fa-lightbulb text-amber"></i> AI Fit Strategy & Action Plan</h4>
+              </div>
+              <p class="fit-summary-text" id="matchFitSummary"></p>
+              
+              <h5 style="margin-top: 12px; margin-bottom: 6px;"><i class="fa-solid fa-list-check text-purple"></i> Targeted Improvements:</h5>
+              <ul class="recommendation-list" id="matchRecsList"></ul>
+
+              <h5 style="margin-top: 12px; margin-bottom: 6px;"><i class="fa-solid fa-bullseye text-cyan"></i> Key Talking Points for Interview:</h5>
+              <ul class="recommendation-list" id="matchInterviewPointsList"></ul>
+            </div>
+
+            <!-- Quick Action CTA -->
+            <div class="match-actions-bar">
+              <button class="btn btn-primary" id="btnTrackJobMatch" onclick="app.trackCurrentJobMatch()">
+                <i class="fa-solid fa-plus"></i> Add to Application Tracker
+              </button>
+              <button class="btn btn-secondary" onclick="app.generateCoverLetterForCurrentMatch()">
+                <i class="fa-solid fa-feather-pointed"></i> Generate Cover Letter
+              </button>
+              <button class="btn btn-outline" onclick="app.generateInterviewPrepForCurrentMatch()">
+                <i class="fa-solid fa-user-astronaut"></i> Interview Prep
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: AI COPILOT SUITE ==================== -->
+    <section id="tab-copilot" class="tab-pane">
+      <div class="section-title-row">
+        <div>
+          <h2><i class="fa-solid fa-wand-magic-sparkles text-gradient"></i> AI Career Copilot Suite</h2>
+          <p class="section-desc">Generate tailored cover letters, rewrite impact bullets, prepare for technical interviews, and build career roadmaps.</p>
+        </div>
+      </div>
+
+      <!-- Copilot Tool Selector Tabs -->
+      <div class="copilot-subtabs">
+        <button class="copilot-tab active" data-tool="cover_letter" onclick="app.switchCopilotTool('cover_letter', this)">
+          <i class="fa-solid fa-envelope-open-text"></i> Cover Letter Generator
+        </button>
+        <button class="copilot-tab" data-tool="bullet_optimizer" onclick="app.switchCopilotTool('bullet_optimizer', this)">
+          <i class="fa-solid fa-wand-sparkles"></i> STAR Bullet Optimizer
+        </button>
+        <button class="copilot-tab" data-tool="interview_prep" onclick="app.switchCopilotTool('interview_prep', this)">
+          <i class="fa-solid fa-user-astronaut"></i> Interview Coach Q&A
+        </button>
+        <button class="copilot-tab" data-tool="career_roadmap" onclick="app.switchCopilotTool('career_roadmap', this)">
+          <i class="fa-solid fa-route"></i> Career Upskilling Roadmap
+        </button>
+      </div>
+
+      <!-- Tool 1: Cover Letter Generator -->
+      <div id="tool-cover_letter" class="copilot-tool-pane active">
+        <div class="copilot-two-col">
+          <!-- Left: Input Form -->
+          <div class="glass-card">
+            <h3><i class="fa-solid fa-pen-nib text-cyan"></i> Job & Tone Details</h3>
+            <form id="coverLetterForm" onsubmit="event.preventDefault(); app.generateCoverLetter();">
+              <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                  <label for="clJobTitle">Target Job Title *</label>
+                  <input type="text" id="clJobTitle" class="input-text" placeholder="e.g. Lead Full Stack Architect" required />
+                </div>
+                <div class="form-group" style="flex: 1;">
+                  <label for="clCompanyName">Company Name *</label>
+                  <input type="text" id="clCompanyName" class="input-text" placeholder="e.g. Stripe / Datadog" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="clTone">Writing Tone & Style</label>
+                <select id="clTone" class="input-select">
+                  <option value="professional">Professional & Polished</option>
+                  <option value="enthusiastic">Enthusiastic & High-Energy</option>
+                  <option value="startup">Startup & Builder Mindset</option>
+                  <option value="executive">Executive & Strategic</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="clJobDesc">Job Description / Requirements Snippet</label>
+                <textarea id="clJobDesc" class="input-textarea" rows="4" placeholder="Paste key responsibilities or JD snippet..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="clCustomNotes">Key Accomplishments to Emphasize (Optional)</label>
+                <input type="text" id="clCustomNotes" class="input-text" placeholder="e.g. Scaled microservice architecture to 5M req/day..." />
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block" id="btnGenCoverLetter">
+                <i class="fa-solid fa-sparkles"></i> Generate Tailored Cover Letter
+              </button>
+            </form>
+          </div>
+
+          <!-- Right: Output Card -->
+          <div class="glass-card output-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-file-lines text-purple"></i> Generated Cover Letter</h3>
+              <div class="btn-group">
+                <button class="btn btn-outline btn-xs" onclick="app.copyCoverLetterText()"><i class="fa-solid fa-copy"></i> Copy</button>
+                <button class="btn btn-secondary btn-xs" onclick="app.downloadCoverLetter()"><i class="fa-solid fa-download"></i> Download .txt</button>
+              </div>
+            </div>
+            
+            <div class="generated-output-box" id="coverLetterOutput">
+              <div class="empty-state-inner">
+                <i class="fa-solid fa-feather-pointed"></i>
+                <p>Fill in the role details and click generate to craft an ATS-aligned, persuasive cover letter.</p>
+              </div>
+            </div>
+
+            <div class="selling-points-wrap" id="clSellingPointsWrap" style="display: none;">
+              <h5><i class="fa-solid fa-star text-amber"></i> Key Selling Points Highlighted:</h5>
+              <ul id="clSellingPointsList" class="points-list"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tool 2: STAR Bullet Optimizer -->
+      <div id="tool-bullet_optimizer" class="copilot-tool-pane">
+        <div class="copilot-two-col">
+          <div class="glass-card">
+            <h3><i class="fa-solid fa-pen-fancy text-green"></i> Resume Bullet Points to Optimize</h3>
+            <p class="text-muted">Transform weak duties into high-impact Google XYZ formula bullets: <em>"Accomplished [X], as measured by [Y], by doing [Z]"</em>.</p>
+            
+            <div class="form-group">
+              <label for="boTargetRole">Target Role</label>
+              <input type="text" id="boTargetRole" class="input-text" placeholder="e.g. Senior Backend Engineer" value="Software Engineer" />
+            </div>
+
+            <div class="form-group">
+              <label for="boBulletsInput">Enter Bullets (one per line):</label>
+              <textarea id="boBulletsInput" class="input-textarea" rows="6" placeholder="Worked on backend APIs and fixed bugs
+Responsible for database queries and user authentication
+Helped with customer feature requests"></textarea>
+            </div>
+
+            <button type="button" class="btn btn-primary btn-block" id="btnOptimizeBullets" onclick="app.optimizeBulletPoints()">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Transform with AI Engine
+            </button>
+          </div>
+
+          <div class="glass-card output-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-check-circle text-cyan"></i> High-Impact Transformations</h3>
+            </div>
+            <div class="bullet-optimizations-list" id="customBulletsResults">
+              <div class="empty-state-inner">
+                <i class="fa-solid fa-list-ol"></i>
+                <p>Click optimize to see side-by-side metric enhancements and action verb upgrades.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tool 3: Interview Coach Q&A -->
+      <div id="tool-interview_prep" class="copilot-tool-pane">
+        <div class="copilot-two-col">
+          <div class="glass-card">
+            <h3><i class="fa-solid fa-user-astronaut text-amber"></i> Target Interview Simulation</h3>
+            <div class="form-group">
+              <label for="ipJobTitle">Interview Role Title *</label>
+              <input type="text" id="ipJobTitle" class="input-text" placeholder="e.g. Cloud Infrastructure Engineer" value="Senior Software Engineer" />
+            </div>
+            <div class="form-group">
+              <label for="ipJobDesc">Role Requirements or Company Notes</label>
+              <textarea id="ipJobDesc" class="input-textarea" rows="5" placeholder="Paste job requirements or focus areas (e.g., Kubernetes, System Design, Concurrency)..."></textarea>
+            </div>
+            <div class="form-group">
+              <label for="ipQuestionCount">Question Count</label>
+              <select id="ipQuestionCount" class="input-select">
+                <option value="3">3 Essential Questions</option>
+                <option value="5" selected>5 Comprehensive Questions</option>
+                <option value="8">8 Deep-Dive Questions</option>
+              </select>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" id="btnGenInterviewPrep" onclick="app.generateInterviewPrep()">
+              <i class="fa-solid fa-brain"></i> Generate Interview Strategy & Q&A
+            </button>
+          </div>
+
+          <div class="glass-card output-card">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-comments-question text-green"></i> Predicted Questions & STAR Answers</h3>
+            </div>
+            <div class="interview-questions-list" id="interviewQuestionsResults">
+              <div class="empty-state-inner">
+                <i class="fa-solid fa-microphone-lines"></i>
+                <p>Generate simulated behavioral & technical interview questions with proven STAR response frameworks.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tool 4: Career Upskilling Roadmap -->
+      <div id="tool-career_roadmap" class="copilot-tool-pane">
+        <div class="glass-card">
+          <div class="roadmap-header-row">
+            <div>
+              <h3><i class="fa-solid fa-route text-purple"></i> Personalized Upskilling Roadmap</h3>
+              <p class="text-muted">Fill skill gaps to bridge your profile to the next compensation tier.</p>
+            </div>
+            <div class="roadmap-inputs">
+              <input type="text" id="roadmapTargetRole" class="input-text" placeholder="Target Role e.g. Staff AI Architect" value="Principal Cloud Architect" />
+              <button class="btn btn-primary" onclick="app.generateCareerRoadmap()"><i class="fa-solid fa-compass"></i> Generate Roadmap</button>
+            </div>
+          </div>
+
+          <div class="roadmap-timeline" id="roadmapTimelineContainer">
+            <!-- Dynamically populated milestones -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: APPLICATION KANBAN TRACKER ==================== -->
+    <section id="tab-tracker" class="tab-pane">
+      <div class="section-title-row">
+        <div>
+          <h2><i class="fa-solid fa-list-check text-gradient"></i> Job Application Kanban Tracker</h2>
+          <p class="section-desc">Manage job leads, application submissions, upcoming interviews, and offers in one organized dashboard.</p>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="app.openNewAppModal()">
+          <i class="fa-solid fa-plus"></i> Add Application
+        </button>
+      </div>
+
+      <!-- Kanban Board Columns -->
+      <div class="kanban-board">
+        <!-- Wishlist -->
+        <div class="kanban-col" data-status="WISHLIST">
+          <div class="kanban-col-header header-wishlist">
+            <span><i class="fa-solid fa-bookmark"></i> Wishlist</span>
+            <span class="col-count" id="countColWishlist">0</span>
+          </div>
+          <div class="kanban-cards-container" id="col-WISHLIST"></div>
+        </div>
+
+        <!-- Applied -->
+        <div class="kanban-col" data-status="APPLIED">
+          <div class="kanban-col-header header-applied">
+            <span><i class="fa-solid fa-paper-plane"></i> Applied</span>
+            <span class="col-count" id="countColApplied">0</span>
+          </div>
+          <div class="kanban-cards-container" id="col-APPLIED"></div>
+        </div>
+
+        <!-- Interviewing -->
+        <div class="kanban-col" data-status="INTERVIEWING">
+          <div class="kanban-col-header header-interview">
+            <span><i class="fa-solid fa-comments"></i> Interviewing</span>
+            <span class="col-count" id="countColInterviewing">0</span>
+          </div>
+          <div class="kanban-cards-container" id="col-INTERVIEWING"></div>
+        </div>
+
+        <!-- Offer -->
+        <div class="kanban-col" data-status="OFFER">
+          <div class="kanban-col-header header-offer">
+            <span><i class="fa-solid fa-trophy"></i> Offer Received</span>
+            <span class="col-count" id="countColOffer">0</span>
+          </div>
+          <div class="kanban-cards-container" id="col-OFFER"></div>
+        </div>
+
+        <!-- Rejected -->
+        <div class="kanban-col" data-status="REJECTED">
+          <div class="kanban-col-header header-rejected">
+            <span><i class="fa-solid fa-circle-xmark"></i> Archived / Rejected</span>
+            <span class="col-count" id="countColRejected">0</span>
+          </div>
+          <div class="kanban-cards-container" id="col-REJECTED"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. Post New Job Modal -->
+  <dialog id="newJobModal" class="custom-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-plus-circle text-cyan"></i> Post / Add Custom Job</h3>
+        <button class="btn-close" onclick="document.getElementById('newJobModal').close()">&times;</button>
+      </div>
+      <form id="newJobForm" onsubmit="event.preventDefault(); app.submitNewJob();">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+              <label for="njTitle">Job Title *</label>
+              <input type="text" id="njTitle" class="input-text" placeholder="e.g. Staff Backend Engineer" required />
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label for="njCompany">Company Name *</label>
+              <input type="text" id="njCompany" class="input-text" placeholder="e.g. OpenAI / Google" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+              <label for="njLocation">Location</label>
+              <input type="text" id="njLocation" class="input-text" placeholder="Remote / San Francisco, CA" value="Remote" />
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label for="njSalary">Salary Range</label>
+              <input type="text" id="njSalary" class="input-text" placeholder="$140,000 - $180,000" value="$140k - $180k" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="njSkills">Required Skills (comma-separated)</label>
+            <input type="text" id="njSkills" class="input-text" placeholder="Python, FastAPI, Docker, PostgreSQL, Redis, Kubernetes" />
+          </div>
+
+          <div class="form-group">
+            <label for="njDescription">Job Description *</label>
+            <textarea id="njDescription" class="input-textarea" rows="5" placeholder="Paste full job description here..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('newJobModal').close()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save Job</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- 2. Add New Application Modal -->
+  <dialog id="newAppModal" class="custom-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-folder-plus text-purple"></i> Add Tracked Application</h3>
+        <button class="btn-close" onclick="document.getElementById('newAppModal').close()">&times;</button>
+      </div>
+      <form id="newAppForm" onsubmit="event.preventDefault(); app.submitNewApplication();">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+              <label for="naCompany">Company Name *</label>
+              <input type="text" id="naCompany" class="input-text" placeholder="e.g. Figma" required />
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label for="naJobTitle">Job Title *</label>
+              <input type="text" id="naJobTitle" class="input-text" placeholder="e.g. Senior Frontend Engineer" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" style="flex: 1;">
+              <label for="naStatus">Status Column</label>
+              <select id="naStatus" class="input-select">
+                <option value="WISHLIST">Wishlist</option>
+                <option value="APPLIED" selected>Applied</option>
+                <option value="INTERVIEWING">Interviewing</option>
+                <option value="OFFER">Offer</option>
+              </select>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label for="naSalary">Target Salary</label>
+              <input type="text" id="naSalary" class="input-text" placeholder="$150,000" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="naNotes">Notes / Interview Prep Links</label>
+            <textarea id="naNotes" class="input-textarea" rows="3" placeholder="Recruiter name, referral info, salary notes..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('newAppModal').close()">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Add to Tracker</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- 3. Settings Modal -->
+  <dialog id="settingsModal" class="custom-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-sliders text-cyan"></i> AI Configuration & API Endpoints</h3>
+        <button class="btn-close" onclick="document.getElementById('settingsModal').close()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="backendUrlInput">Backend API Host URL</label>
+          <input type="text" id="backendUrlInput" class="input-text" value="http://localhost:8000" />
+          <small class="text-muted">Default is FastAPI backend port 8000.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="userApiKeyInput">Custom OpenAI / Gemini API Key (Optional)</label>
+          <input type="password" id="userApiKeyInput" class="input-text" placeholder="sk-... (Stored securely in local session)" />
+          <small class="text-muted">If empty, built-in server keys or smart NLP Heuristics engine will be used.</small>
+        </div>
+
+        <div class="system-status-box">
+          <div class="status-indicator-dot online"></div>
+          <div>
+            <strong>System Engine Status: Ready</strong>
+            <p>FastAPI Engine, NLP Tokenizer, ATS Analyzer & Cosine Job Matcher are operational.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="app.saveSettings()">Save Configuration</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
